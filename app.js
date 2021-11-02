@@ -1,35 +1,4 @@
-const players = [
-    {
-        name: "Ali",
-        score: 69,
-        id:1
-      },
-      {
-        name: "Baha",
-        score: 68,
-        id:2
-      },
-      {
-        name: "Ghayth",
-        score: 67,
-        id:3
-      },
-      {
-        name: "Noussair",
-        score: 66,
-        id:4
-      },
-      {
-        name: "Hichem",
-        score: 65,
-        id:5
-      },
-      {
-        name: "Nader",
-        score: 64,
-        id:6
-      }
-]
+
 
 const Header = (props) => { 
     
@@ -45,42 +14,107 @@ const Player = (props) => {
    return (
        <div className="player">
            <span className="player-name">
+           <button className="remove-player" onClick={()=> props.removePlayer(props.id) } >✖</button>
            {props.name}
            </span>
-           <Counter score={props.score} />
+           <Counter />
        </div>
    )
 }
 
-const Counter = (props) => {
-    return (
-<div className="counter">
-    <button className="counter-action decrement"> - </button>
-    <span className="counter-score">{props.score}</span>
-    <button className="counter-action increment" > + </button>
-</div>
-    )
+class Counter extends React.Component {
+
+state = {
+  score: 0
 }
 
-const App = (props) => {
+incrementScore =()=> {
+  this.setState( prevState =>  ({
+      score: prevState.score +1
+  }))
+}
+
+decrementScore =()=> {
+  this.setState( prevState=>  ({
+    score: prevState.score-1
+  })
+  )
+}
+
+  render () {
     return (
-        <div className="scoreboard">
-            <Header
-             title="Pexa Scoreboard"
-              totalPlayers={props.initialPlayers.length} />
-            {/* players list*/}
-            {props.initialPlayers.map( player => 
-                <Player
-                 name={player.name}
-                 score={player.score}
-                 key={player.id.toString()}
-                  />
-            )}
-        </div>
-    )
+      <div className="counter">
+          <button className="counter-action decrement" onClick={this.decrementScore} > - </button>
+          <span className="counter-score">{this.state.score}</span>
+          <button className="counter-action increment" onClick={this.incrementScore} > + </button>
+      </div>
+          )
+  }
+    
+}
+
+class App extends React.Component {
+
+  state= {
+     players : [
+      {
+          name: "Ali",
+          id:1
+        },
+        {
+          name: "Baha",
+          id:2
+        },
+        {
+          name: "Ghayth",
+          id:3
+        },
+        {
+          name: "Noussair",
+          id:4
+        },
+        {
+          name: "Hichem",
+          id:5
+        },
+        {
+          name: "Nader",
+          id:6
+        }
+  ]
+  }
+
+  handleRemovePlayer = (id) => {
+    this.setState( prevState => {
+      return {
+        players: prevState.players.filter( p=> p.id !== id )
+
+      }
+    })
+  }
+
+  render () {
+    return (
+      <div className="scoreboard">
+          <Header
+           title="Pexa Scoreboard"
+            totalPlayers={this.state.players.length} />
+          {/* players list*/}
+          {this.state.players.map( player => 
+              <Player
+               name={player.name}
+               id={player.id}
+               key={player.id.toString()}
+               removePlayer={this.handleRemovePlayer}
+                />
+          )}
+      </div>
+  )
+
+  }
 }
 
 ReactDOM.render(
-   <App initialPlayers={players} />,
+   <App />,
    document.getElementById('root')
 )
